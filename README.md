@@ -32,3 +32,21 @@ i wanted to emphasize a varying scene, where the lighting isn't always the same 
  - locate the `"Releases"` tab on the right side of this page.
  - find the release version you want to download. locate the files attactched to it, and download the file named similar to `"Bliss_(version)_chocapic13_shaders_edit.zip"`
  - once the zip file finishes downloading, install it like a normal shader. you do NOT need to unzip/extract/decompress.
+
+## Advanced Materials (BSL-style SEUS/Old PBR & labPBR emission for entities)
+This fork adds two settings, just like in BSL shaders, under
+**Shader Options -> Resource Pack Support -> Materials / Advanced Materials**:
+
+- **Advanced Materials** (on/off) - enables reading `"_s"` specular textures on entities
+  (player skins, mobs, armor) and on the first-person hand.
+- **Material Format** (`labPBR 1.3` / `SEUS/Old PBR`, default = `SEUS/Old PBR`):
+  - `SEUS/Old PBR` - the **blue channel** of the `"_s"` texture is emission. Alpha is ignored.
+  - `labPBR 1.3` - the blue channel is emission too, but it is disabled for hard-coded
+    (HCM) metals that use an alpha of 230 or higher.
+
+Example use: put a skin texture called `Electro` and an `Electro_s` texture in the same
+folder of your resource pack, paint the parts that should glow **blue** on the `_s` image,
+and those parts of the character will glow. The `_s` texture must actually be loaded by the
+game (OptiFine/CEM, or Iris together with a mod such as ETF/EMF), exactly like in BSL.
+Glow strength and curve can be tuned in **Resource Pack Support -> Emissives**
+(`Emission Multiplier` / `Emission Curve`).

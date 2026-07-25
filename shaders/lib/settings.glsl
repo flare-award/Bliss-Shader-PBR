@@ -274,6 +274,15 @@ const float entityShadowDistanceMul = 0.25; // [0.01 0.02 0.03 0.04 0.05 0.10 0.
 	#define LIGHTSOURCE_REFLECTION
 #endif
 
+// ----- BSL-style "Advanced Materials" for entities and the first-person hand -----
+// Makes entities (including player skins) and the hand read "_s" specular textures
+// provided by a resourcepack, using their blue channel for emission (glowing).
+// Works exactly like the "Advanced Materials" + "Material Format" options in BSL shaders.
+// MATERIAL_FORMAT: 1 = labPBR 1.3 (blue channel = emission, disabled for HCM metals with alpha >= 230)
+//                  0 = SEUS/Old PBR (blue channel = emission, alpha is ignored)
+#define ADVANCED_MATERIALS
+#define MATERIAL_FORMAT 0 // [1 0]
+
 #define EMISSIVE_TYPE 1 // [0 1 2 3]
 #define Emissive_Brightness 1.0 // [1.0 2.0 3.0 4.0 5.0 6.0 7.0 8.0 9.0 10.0 15.0 20.0 25.0 30.0 35.0 40.0 45.0 50.0 100.]
 #define Emissive_Curve 2.0 // [0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 2.0 2.1 2.2 2.3 2.4 2.5 2.6 2.7 2.8 2.9 3.0 ]

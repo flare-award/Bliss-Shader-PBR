@@ -533,6 +533,36 @@ void main() {
 		#endif
 	#endif
 
+	//////////////////////////////// 									////////////////////////////////
+	////////////////////////////////	ADVANCED MATERIALS EMISSION		////////////////////////////////
+	//////////////////////////////// 									////////////////////////////////
+
+	// BSL-style "Advanced Materials": read emission from the "_s" specular texture of
+	// entities (player skins, mobs, armor, etc.) and the first-person hand.
+	// The written alpha value of colortex8 is turned into glow by the composite pass.
+	#if defined ADVANCED_MATERIALS && defined MC_SPECULAR_MAP && (defined ENTITIES || defined HAND)
+
+		vec4 AdvancedSpecularTex = texture2D(specular, adjustedTexCoord.xy);
+
+		// Make sure a "_s" texture actually exists for this draw call before using it.
+		// When Iris/OptiFine cannot find one, the sample comes back as pure white.
+		if (dot(AdvancedSpecularTex.rgb, vec3(1.0)) < 3.0 - 0.01) {
+
+			#if MATERIAL_FORMAT == 0
+				// SEUS/Old PBR: emission is stored in the BLUE channel of the "_s" texture. Alpha is not used.
+				float AdvancedEmission = AdvancedSpecularTex.b;
+			#else
+				// labPBR 1.3: the BLUE channel of the "_s" texture is emission,
+				// but it gets disabled for hard-coded (HCM) metals, which use alpha values of 230 or higher.
+				float AdvancedEmission = AdvancedSpecularTex.a > 229.5/255.0 ? 0.0 : AdvancedSpecularTex.b;
+			#endif
+
+			// Clamp below 1.0. Values of 254.5/255 or higher are treated as "no data" in
+			// colortex8 alpha and get ignored by the emission effect in the composite pass.
+			gl_FragData[1].a = max(gl_FragData[1].a, clamp(AdvancedEmission, 0.0, 254.0/255.0));
+		}
+	#endif
+
 	// hit glow effect...
 	#ifdef ENTITIES
 		Albedo.rgb = mix(Albedo.rgb, entityColor.rgb, clamp(entityColor.a*1.5,0,1));
